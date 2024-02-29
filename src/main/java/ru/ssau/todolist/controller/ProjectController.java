@@ -29,7 +29,7 @@ public class ProjectController {
     @PutMapping("/{projectId}")
     public ResponseEntity<Project> editProject(@PathVariable Long projectId, @RequestBody Project project) {
         try {
-            return new ResponseEntity<Project>(projectService.editProject(projectId, project), HttpStatus.OK);
+            return new ResponseEntity<>(projectService.editProject(projectId, project), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -44,7 +44,7 @@ public class ProjectController {
     @GetMapping("/{projectId}")
     public ResponseEntity<Project> getProject(@PathVariable Long projectId) {
         try {
-            return new ResponseEntity<Project>(projectService.getProject(projectId), HttpStatus.OK);
+            return new ResponseEntity<>(projectService.getProject(projectId), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -56,7 +56,7 @@ public class ProjectController {
         List<Project> projectsFilteredList = projectService.getFilteredProjects(date_start, date_end);
 
         if (!projectsFilteredList.isEmpty())
-            return new ResponseEntity<List<Project>>(projectsFilteredList, HttpStatus.OK);
+            return new ResponseEntity<>(projectsFilteredList, HttpStatus.OK);
 
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
@@ -66,7 +66,7 @@ public class ProjectController {
         List<Project> projectsList = projectService.getAllProjects();
 
         if (!projectsList.isEmpty())
-            return new ResponseEntity<List<Project>>(projectsList, HttpStatus.OK);
+            return new ResponseEntity<>(projectsList, HttpStatus.OK);
 
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
