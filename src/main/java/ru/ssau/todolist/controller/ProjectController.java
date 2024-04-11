@@ -20,7 +20,7 @@ public class ProjectController {
     @PostMapping
     public ResponseEntity<Project> createProject(@RequestBody Project project) {
         try {
-            return new ResponseEntity<Project>(projectService.createProject(project), HttpStatus.CREATED);
+            return new ResponseEntity<>(projectService.createProject(project), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
