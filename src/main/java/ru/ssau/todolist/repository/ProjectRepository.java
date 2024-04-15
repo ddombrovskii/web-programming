@@ -1,21 +1,12 @@
 package ru.ssau.todolist.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import ru.ssau.todolist.model.Project;
 
-import java.time.LocalDate;
 import java.util.List;
 
-public interface ProjectRepository {
-    Long createAndReturnId(Project project);
-
-    void editProject(Long id, Project project);
-
-    void deleteProject(Long id);
-
-    Project getProjectById(Long id);
-
-    List<Project> getFilteredProjects(LocalDate from_date, LocalDate to_date);
-
-    List<Project> getAllProjects();
-
+@Repository
+public interface ProjectRepository extends JpaRepository<Project, Long> {
+    List<Project> findByDescriptionContainingIgnoreCase(String query);
 }

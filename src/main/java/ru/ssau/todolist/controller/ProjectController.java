@@ -5,10 +5,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import ru.ssau.todolist.model.Project;
+import ru.ssau.todolist.exceptions.EmptyEntityException;
+import ru.ssau.todolist.pojo.ProjectPojo;
 import ru.ssau.todolist.service.ProjectService;
 
-import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -17,58 +18,45 @@ public class ProjectController {
     @Autowired
     private ProjectService projectService;
 
+    // POST /projects - создаёт проект (без задач);
     @PostMapping
-    public ResponseEntity<Project> createProject(@RequestBody Project project) {
-        try {
-            return new ResponseEntity<Project>(projectService.createProject(project), HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<ProjectPojo> createProject(@RequestBody ProjectPojo pojo) {
+        return new ResponseEntity<>(projectService.create(pojo), HttpStatus.OK);
     }
 
-    @PutMapping("/{projectId}")
-    public ResponseEntity<Project> editProject(@PathVariable Long projectId, @RequestBody Project project) {
+    // GET /projects/{projectId} - возвращает проект с id=projectId
+    @GetMapping("/{projectId}")
+    public ResponseEntity<ProjectPojo> readProject(@PathVariable Long projectId) {
         try {
-            return new ResponseEntity<>(projectService.editProject(projectId, project), HttpStatus.OK);
-        } catch (Exception e) {
+            return new ResponseEntity<>(projectService.read(projectId), HttpStatus.OK);
+        } catch (EmptyEntityException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
+    // PUT /projects/{projectId} - обновляет проект
+    @PutMapping("/{projectId}")
+    public ResponseEntity<ProjectPojo> updateProject(@PathVariable Long projectId, @RequestBody ProjectPojo project) {
+        return new ResponseEntity<>(projectService.update(projectId, project), HttpStatus.OK);
+    }
+
+    // DELETE /projects/{projectId} - удаление проекта. При удалении проекта удаляются все связанные задачи.
     @DeleteMapping("/{projectId}")
     public ResponseEntity<?> deleteProject(@PathVariable Long projectId) {
-            projectService.deleteProject(projectId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        projectService.delete(projectId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/{projectId}")
-    public ResponseEntity<Project> getProject(@PathVariable Long projectId) {
-        try {
-            return new ResponseEntity<>(projectService.getProject(projectId), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
+    // GET /projects?search={search} - возвращает все проекты с опциональной фильтрацией по тексту
     @GetMapping
-    public ResponseEntity<List<Project>> getFilteredProjects(@RequestParam(name="start_date") LocalDate date_start,
-                                                     @RequestParam(name="end_date") LocalDate date_end) {
-        List<Project> projectsFilteredList = projectService.getFilteredProjects(date_start, date_end);
-
-        if (!projectsFilteredList.isEmpty())
-            return new ResponseEntity<>(projectsFilteredList, HttpStatus.OK);
-
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<List<ProjectPojo>> getProjectsBySearch(@RequestParam(name = "search") String query) {
+        return new ResponseEntity<>(projectService.search(query), HttpStatus.OK);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Project>> getAllProjects() {
-        List<Project> projectsList = projectService.getAllProjects();
-
-        if (!projectsList.isEmpty())
-            return new ResponseEntity<>(projectsList, HttpStatus.OK);
-
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    // Получение информации о количестве незакрытых задач во всех проектах
+    @GetMapping("/open-tasks")
+    public ResponseEntity<HashMap<Long, Integer>> getOpenTasks() {
+        return new ResponseEntity<>(projectService.getOpenTasks(), HttpStatus.OK);
     }
 
 }

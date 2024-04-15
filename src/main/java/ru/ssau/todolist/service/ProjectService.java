@@ -2,41 +2,86 @@ package ru.ssau.todolist.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.ssau.todolist.exceptions.EmptyEntityException;
+import ru.ssau.todolist.pojo.ProjectPojo;
 import ru.ssau.todolist.model.Project;
 import ru.ssau.todolist.repository.ProjectRepository;
+import ru.ssau.todolist.repository.TaskRepository;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class ProjectService {
 
-    private final ProjectRepository repository;
+    private final ProjectRepository projectRepository;
+    private final TaskRepository taskRepository;
 
-    public Project createProject(Project project) {
-        return repository.getProjectById(repository.createAndReturnId(project));
+    // создание проекта
+    public ProjectPojo create(ProjectPojo pojo) {
+        Project pj = projectRepository.save(Project.builder()
+                .projectName(pojo.getProjectName())
+                .description(pojo.getDescription())
+                .dateStart(pojo.getDateStart())
+                .dateEnd(pojo.getDateEnd()).build());
+
+        return ProjectPojo.fromEntity(pj);
     }
 
-    public Project editProject(Long id, Project project) {
-        repository.editProject(id, project);
-        return repository.getProjectById(id);
+    // изменение проекта
+    public ProjectPojo update(Long id, ProjectPojo dto) {
+        Project projectToUpdate = projectRepository.getReferenceById(id);
+
+        projectToUpdate.setProjectName(dto.getProjectName());
+        projectToUpdate.setDescription(dto.getDescription());
+        projectToUpdate.setDateStart(dto.getDateStart());
+        projectToUpdate.setDateEnd(dto.getDateEnd());
+
+        Project pj = projectRepository.save(projectToUpdate);
+
+        return ProjectPojo.fromEntity(pj);
     }
 
-    public void deleteProject(Long id) {
-        repository.deleteProject(id);
+    // получение проекта
+    public ProjectPojo read(Long id) throws EmptyEntityException {
+        var pj = projectRepository.findById(id);
+
+        if (pj.isEmpty()) {
+            throw new EmptyEntityException("Not found project by id " + id);
+        }
+
+        return ProjectPojo.fromEntity(pj.get());
+
     }
 
-    public Project getProject(Long id) {
-        return repository.getProjectById(id);
+    // удаление проекта
+    public void delete(Long id) {
+        projectRepository.deleteById(id);
     }
 
-    public List<Project> getFilteredProjects(LocalDate from_date, LocalDate to_date) {
-        return repository.getFilteredProjects(from_date, to_date);
+    // поиск по описанию (description)
+    public List<ProjectPojo> search(String query) {
+        List<Project> project = projectRepository.findByDescriptionContainingIgnoreCase(query);
+        List<ProjectPojo> pj = new ArrayList<>();
+
+        for (Project p : project) {
+            pj.add(ProjectPojo.fromEntity(p));
+        }
+
+        return pj;
     }
 
-    public List<Project> getAllProjects() {
-        return repository.getAllProjects();
-    }
+    // количество незакрытых (false) задач во всех проектах
+    public HashMap<Long, Integer> getOpenTasks() {
+        HashMap<Long, Integer> openTasks = new HashMap<>();
+        List<Project> projects = projectRepository.findAll();
 
+        for (Project p: projects) {
+            openTasks.put(p.getId(), taskRepository.getCountOfOpenTasksByProjectId(p.getId()));
+        }
+
+        return openTasks;
+    }
 }

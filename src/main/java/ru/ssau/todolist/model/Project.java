@@ -1,16 +1,35 @@
 package ru.ssau.todolist.model;
 
-import lombok.Data;
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
+
+@Entity
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Project {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
-    private String project_name;
+
+    @Column(name = "project_name")
+    private String projectName;
+
+    @Column(name = "description")
     private String description;
-    private LocalDate date_start;
-    private LocalDate date_end;
+
+    @Column(name = "date_start")
+    private LocalDate dateStart;
+
+    @Column(name = "date_end")
+    private LocalDate dateEnd;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "project")
+    private List<Task> tasks;
 }
