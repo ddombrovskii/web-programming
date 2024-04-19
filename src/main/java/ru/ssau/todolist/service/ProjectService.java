@@ -63,7 +63,7 @@ public class ProjectService {
 
     // поиск по описанию (description)
     public List<ProjectPojo> search(String query) {
-        List<Project> project = projectRepository.findByDescriptionContainingIgnoreCase(query);
+        List<Project> project = projectRepository.findByProjectNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(query, query);
         List<ProjectPojo> pj = new ArrayList<>();
 
         for (Project p : project) {
