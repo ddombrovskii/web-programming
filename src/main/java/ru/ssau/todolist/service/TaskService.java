@@ -2,10 +2,8 @@ package ru.ssau.todolist.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.ssau.todolist.exceptions.EmptyEntityException;
-import ru.ssau.todolist.model.Project;
+import ru.ssau.todolist.exceptions.EntityNotFoundException;
 import ru.ssau.todolist.model.Task;
-import ru.ssau.todolist.pojo.ProjectPojo;
 import ru.ssau.todolist.pojo.TaskPojo;
 import ru.ssau.todolist.repository.ProjectRepository;
 import ru.ssau.todolist.repository.TaskRepository;
@@ -20,10 +18,10 @@ public class TaskService {
     private final ProjectRepository projectRepository;
 
     // создание задачи по id проекта
-    public TaskPojo create(Long projectId, TaskPojo pojo) throws EmptyEntityException {
+    public TaskPojo create(Long projectId, TaskPojo pojo) throws EntityNotFoundException {
         var opProject = projectRepository.findById(projectId);
         if (opProject.isEmpty()) {
-            throw new EmptyEntityException("Not found project by id " + projectId);
+            throw new EntityNotFoundException("Not found project by id " + projectId);
         }
 
         Task tsk = taskRepository.saveAndFlush(Task.builder()
@@ -37,25 +35,25 @@ public class TaskService {
     }
 
     // получение задачи по id проекта
-    public TaskPojo read(Long projectId, Long taskId) throws EmptyEntityException {
+    public TaskPojo read(Long projectId, Long taskId) throws EntityNotFoundException {
         var opProject = projectRepository.findById(projectId);
         if (opProject.isEmpty()) {
-            throw new EmptyEntityException("Not found project by id " + projectId);
+            throw new EntityNotFoundException("Not found project by id " + projectId);
         }
 
         var tsk = taskRepository.findById(taskId);
         if (tsk.isEmpty()) {
-            throw new EmptyEntityException("Not found project by id " + taskId);
+            throw new EntityNotFoundException("Not found project by id " + taskId);
         }
 
         return TaskPojo.fromEntity(tsk.get());
     }
 
     // получение всех задач по id проекта
-    public List<TaskPojo> readAll(Long projectId) throws EmptyEntityException {
+    public List<TaskPojo> readAll(Long projectId) throws EntityNotFoundException {
         var opProject = projectRepository.findById(projectId);
         if (opProject.isEmpty()) {
-            throw new EmptyEntityException("Not found project by id " + projectId);
+            throw new EntityNotFoundException("Not found project by id " + projectId);
         }
 
         List<Task> tasks = taskRepository.findByProjectId(projectId);
@@ -69,10 +67,10 @@ public class TaskService {
     }
 
     // обновление задачи по id проекта и id задачи
-    public TaskPojo update(Long projectId, Long taskId, TaskPojo pojo) throws EmptyEntityException {
+    public TaskPojo update(Long projectId, Long taskId, TaskPojo pojo) throws EntityNotFoundException {
         var opProject = projectRepository.findById(projectId);
         if (opProject.isEmpty()) {
-            throw new EmptyEntityException("Not found project by id " + projectId);
+            throw new EntityNotFoundException("Not found project by id " + projectId);
         }
 
         Task taskToUpdate = taskRepository.getReferenceById(taskId);
@@ -87,20 +85,20 @@ public class TaskService {
     }
 
     // удаление задачи по id проекта и id задачи
-    public void delete(Long projectId, Long taskId) throws EmptyEntityException {
+    public void delete(Long projectId, Long taskId) throws EntityNotFoundException {
         var opProject = projectRepository.findById(projectId);
         if (opProject.isEmpty()) {
-            throw new EmptyEntityException("Not found project by id " + projectId);
+            throw new EntityNotFoundException("Not found project by id " + projectId);
         }
 
         taskRepository.deleteById(taskId);
     }
 
     // удаление всех завершенных задач в проекте по id проекта
-    public void deleteCompletedTasks(Long projectId) throws EmptyEntityException {
+    public void deleteCompletedTasks(Long projectId) throws EntityNotFoundException {
         var opProject = projectRepository.findById(projectId);
         if (opProject.isEmpty()) {
-            throw new EmptyEntityException("Not found project by id " + projectId);
+            throw new EntityNotFoundException("Not found project by id " + projectId);
         }
 
         taskRepository.deleteCompletedTasksByProjectId(projectId);

@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import ru.ssau.todolist.exceptions.EmptyEntityException;
+import ru.ssau.todolist.exceptions.EntityNotFoundException;
 import ru.ssau.todolist.pojo.ProjectPojo;
 import ru.ssau.todolist.service.ProjectService;
 
@@ -29,7 +29,7 @@ public class ProjectController {
     public ResponseEntity<ProjectPojo> readProject(@PathVariable Long projectId) {
         try {
             return new ResponseEntity<>(projectService.read(projectId), HttpStatus.OK);
-        } catch (EmptyEntityException e) {
+        } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -53,7 +53,7 @@ public class ProjectController {
         return new ResponseEntity<>(projectService.search(query), HttpStatus.OK);
     }
 
-    // Получение информации о количестве незакрытых задач во всех проектах
+    // GET /projects/open-tasks - Получение информации о количестве незакрытых задач во всех проектах
     @GetMapping("/open-tasks")
     public ResponseEntity<HashMap<Long, Integer>> getOpenTasks() {
         return new ResponseEntity<>(projectService.getOpenTasks(), HttpStatus.OK);

@@ -2,7 +2,7 @@ package ru.ssau.todolist.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.ssau.todolist.exceptions.EmptyEntityException;
+import ru.ssau.todolist.exceptions.EntityNotFoundException;
 import ru.ssau.todolist.pojo.ProjectPojo;
 import ru.ssau.todolist.model.Project;
 import ru.ssau.todolist.repository.ProjectRepository;
@@ -45,11 +45,11 @@ public class ProjectService {
     }
 
     // получение проекта
-    public ProjectPojo read(Long id) throws EmptyEntityException {
+    public ProjectPojo read(Long id) throws EntityNotFoundException {
         var pj = projectRepository.findById(id);
 
         if (pj.isEmpty()) {
-            throw new EmptyEntityException("Not found project by id " + id);
+            throw new EntityNotFoundException("Not found project by id " + id);
         }
 
         return ProjectPojo.fromEntity(pj.get());
