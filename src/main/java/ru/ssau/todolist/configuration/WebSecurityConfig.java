@@ -34,7 +34,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .httpBasic(Customizer.withDefaults())
+                .csrf().disable()
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers(HttpMethod.POST, "/projects/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/projects/*").hasRole("ADMIN")
