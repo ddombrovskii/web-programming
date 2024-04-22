@@ -18,6 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
@@ -36,15 +37,15 @@ public class WebSecurityConfig {
         return http
                 .csrf().disable()
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers(HttpMethod.POST, "/projects/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/projects/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/projects/*").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
-                .formLogin(form -> form
-                        .defaultSuccessUrl("/projects", true)
-                        .permitAll()
-                )
+                //.formLogin(form -> form
+                //        .defaultSuccessUrl("/projects", true)
+                //        .permitAll()
+                // )
+                .httpBasic(Customizer.withDefaults())
                 .build();
     }
 
