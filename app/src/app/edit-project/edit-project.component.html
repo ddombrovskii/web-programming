@@ -1,1 +1,27 @@
-<p>edit-project works!</p>
+<h2 *ngIf="edit">Редактирование проекта <b>{{project.projectName}}</b></h2>
+<h2 *ngIf="!edit">Создание нвого проекта</h2>
+
+<form>
+  <div class="form-group">
+    <label for="name">Название проекта</label>
+    <input type="text" class="form-control" id="name"
+           [(ngModel)]="project.projectName" name="name" placeholder="Имя проекта">
+  </div>
+  <div class="form-group">
+    <label for="description">Описание</label>
+    <textarea type="text" class="form-control" id="description"
+              [(ngModel)]="project.description" name="description"></textarea>
+  </div>
+  <div class="form-group">
+    <label for="date-start">Дата начала</label>
+    <input type="date" class="form-control" id="date-start"
+           [(ngModel)]="project.dateStart" name="date-start">
+  </div>
+  <div class="form-group">
+    <label for="date-end">Дата завершения</label>
+    <input type="date" class="form-control" id="date-end"
+           [(ngModel)]="project.dateEnd" name="date-end">
+  </div>
+  <button type="button" (click)="update()" *ngIf="edit">Сохранить</button>
+  <button type="button" (click)="save()" *ngIf="!edit">Создать</button>
+</form>

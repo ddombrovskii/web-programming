@@ -1,1 +1,18 @@
-<p>task-list works!</p>
+<h2>Задачи проекта <b>{{project.projectName}}</b></h2>
+
+<p>
+  <button routerLink="/projects">Назад</button>
+</p>
+
+<ul class="tasks">
+  <li *ngFor="let task of tasks">
+    <div class="card">
+      <div class="card__icon" *ngIf="!task.isDone && currentDate < convertDate(task.planDateEnd) "><i class="fa fa-bolt"></i></div>
+      <button class="card__delete" (click)="deleteTask(task)" title="Удалить задачу"><i class="fa fa-times"></i></button>
+      <h2 class="card__title" *ngIf="task.isDone"><s>{{task.taskName}}</s></h2>
+      <h2 class="card__title" *ngIf="!task.isDone">{{task.taskName}}</h2>
+      <p class="card__description">{{task.description}}</p>
+      <p class="card__date">Планируемая дата завершения: {{task.planDateEnd | date: 'dd.MM.yyyy'}}</p>
+    </div>
+  </li>
+</ul>

@@ -30,6 +30,6 @@ public class Project {
     @Column(name = "date_end")
     private LocalDate dateEnd;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "project")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "project")
     private List<Task> tasks;
 }

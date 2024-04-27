@@ -1,2 +1,33 @@
-<p>project-list works!</p>
-<h1>running</h1>
+<h2><b>Список проектов</b></h2>
+
+<div class="search-project">
+  <label for="site-search">Поиск по названию/описанию</label>
+  <input type="search" id="site-search" name="q" placeholder="Поиск..." #box (keyup.enter)="searchProject(box.value)" />
+</div>
+
+<div class="create">
+  <label for="create-project">Создание нового проекта</label>
+  <button type="button" id="create-project" routerLink="/projects/new">Создать</button>
+</div>
+
+<p *ngIf="projects.length == 0">Нет данных</p>
+
+<ul class="projects">
+  <li *ngFor="let project of projects">
+    <div class="card">
+      <!-- <div class="card__icon"><i class="fa fa-bolt"></i></div> -->
+      <button class="card__delete" (click)="deleteProject(project)" title="Удалить проект"><i class="fa fa-times"></i></button>
+      <h2 class="card__title">{{project.projectName}}</h2>
+      <p class="card__description">{{project.description}}</p>
+      <p class="card__date1">Дата начала: {{project.dateStart | date: 'dd.MM.yyyy'}}</p>
+      <p class="card__date2">Дата завершения: {{project.dateEnd | date: 'dd.MM.yyyy'}}</p>
+      <p class="card__completed">Незавершенных задач: {{openTasks[project.id]}}</p>
+      <p class="card__apply">
+        <a class="card__link" routerLink="/projects/{{project.id}}">Редактировать <i class="fa fa-arrow-right"></i></a>
+      </p>
+      <p class="card__tasks">
+        <a class="card__link" routerLink="/tasks/{{project.id}}">Задачи <i class="fa fa-arrow-right"></i></a>
+      </p>
+    </div>
+  </li>
+</ul>

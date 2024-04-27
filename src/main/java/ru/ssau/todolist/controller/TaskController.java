@@ -18,6 +18,7 @@ public class TaskController {
     private TaskService taskService;
 
     // POST /projects/{projectId}/tasks - создаёт задачу
+    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping
     public ResponseEntity<TaskPojo> createTask(@PathVariable Long projectId, @RequestBody TaskPojo pojo) {
         try {
@@ -28,6 +29,7 @@ public class TaskController {
     }
 
     // GET /projects/{projectId}/tasks/{taskId} - возвращает задачу по id задачи и id проекта
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/{taskId}")
     public ResponseEntity<TaskPojo> readTask(@PathVariable Long projectId, @PathVariable Long taskId) {
         try {
@@ -38,6 +40,7 @@ public class TaskController {
     }
 
     // GET /projects/{projectId}/tasks - возвращает все задачи
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping
     public ResponseEntity<List<TaskPojo>> readAllTasks(@PathVariable Long projectId) {
         try {
@@ -54,6 +57,7 @@ public class TaskController {
     //      "isDone": false,
     //      "planDateEnd": "2020-02-02"
     //   }
+    @CrossOrigin(origins = "http://localhost:4200")
     @PutMapping("/{taskId}")
     public ResponseEntity<TaskPojo> updateTask(@PathVariable Long projectId, @PathVariable Long taskId,
                                                @RequestBody TaskPojo pojo) {
@@ -65,6 +69,7 @@ public class TaskController {
     }
 
     // DELETE /projects/{projectId}/tasks/{taskId} - удаляет задачу
+    @CrossOrigin(origins = "http://localhost:4200")
     @DeleteMapping("/{taskId}")
     public ResponseEntity<?> deleteTask(@PathVariable Long projectId, @PathVariable Long taskId) {
         try {
@@ -76,6 +81,7 @@ public class TaskController {
     }
 
     // Функционал, позволяющий удалить все завершённые задачи определённого проекта. Id проекта приходит по HTTP.
+    @CrossOrigin(origins = "http://localhost:4200")
     @DeleteMapping("/delete-tasks")
     public ResponseEntity<?> deleteCompletedTasks(@PathVariable Long projectId) {
         try {

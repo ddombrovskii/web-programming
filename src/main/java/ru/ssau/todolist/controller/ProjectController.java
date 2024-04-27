@@ -19,12 +19,14 @@ public class ProjectController {
     private ProjectService projectService;
 
     // POST /projects - создаёт проект (без задач);
+    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping
     public ResponseEntity<ProjectPojo> createProject(@RequestBody ProjectPojo pojo) {
         return new ResponseEntity<>(projectService.create(pojo), HttpStatus.OK);
     }
 
     // GET /projects/{projectId} - возвращает проект с id=projectId
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/{projectId}")
     public ResponseEntity<ProjectPojo> readProject(@PathVariable Long projectId) {
         try {
@@ -35,12 +37,14 @@ public class ProjectController {
     }
 
     // PUT /projects/{projectId} - обновляет проект
+    @CrossOrigin(origins = "http://localhost:4200")
     @PutMapping("/{projectId}")
     public ResponseEntity<ProjectPojo> updateProject(@PathVariable Long projectId, @RequestBody ProjectPojo project) {
         return new ResponseEntity<>(projectService.update(projectId, project), HttpStatus.OK);
     }
 
     // DELETE /projects/{projectId} - удаление проекта. При удалении проекта удаляются все связанные задачи.
+    @CrossOrigin(origins = "http://localhost:4200")
     @DeleteMapping("/{projectId}")
     public ResponseEntity<?> deleteProject(@PathVariable Long projectId) {
         projectService.delete(projectId);
@@ -48,12 +52,14 @@ public class ProjectController {
     }
 
     // GET /projects?search={search} - возвращает все проекты с опциональной фильтрацией по тексту
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping
     public ResponseEntity<List<ProjectPojo>> getProjectsBySearch(@RequestParam(name = "search") String query) {
         return new ResponseEntity<>(projectService.search(query), HttpStatus.OK);
     }
 
     // Получение информации о количестве незакрытых задач во всех проектах
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/open-tasks")
     public ResponseEntity<HashMap<Long, Integer>> getOpenTasks() {
         return new ResponseEntity<>(projectService.getOpenTasks(), HttpStatus.OK);
